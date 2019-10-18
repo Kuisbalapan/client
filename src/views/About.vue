@@ -42,10 +42,6 @@ export default {
       'https://img.icons8.com/color/48/000000/electric-bumper-car.png',
       'https://img.icons8.com/dusk/64/000000/encashment-car.png',
       'https://img.icons8.com/dusk/64/000000/car-roof-box.png'],
-<<<<<<< HEAD
-      pertanyaan : [],
-      score : 0,
-=======
        pertanyaan : [],
         pos : {
           player1 : {name : '' ,pos : 0},
@@ -53,14 +49,14 @@ export default {
           player3 : {name : '' ,pos : 0},
           player4 : {name : '' ,pos : 0}
         },
->>>>>>> mobilMadju
       soal : '',
       pilihan : [],
       index : 0,
       jumlahSoal : 0,
       roomId : '',
       count : '',
-      finish : false
+      finish : false,
+      player: ''
     }
   },
   methods: {
@@ -81,7 +77,7 @@ export default {
       if(value){
         this.pos[player].pos += 13
           if (this.pos[player].pos >= 91) {
-                  console.log('udah finish')
+                 
                   // this.pos[player].pos = 0
                   // alert('udah mentok')
                   this.finish = true 
@@ -96,7 +92,7 @@ export default {
               finish : this.finish
             })
 
-        console.log(this.pos[player].pos );
+        
         this.soal = ''
         this.pilihan = []
         this.index++
@@ -106,7 +102,7 @@ export default {
           this.ambil(this.index)
       } else {
 
-        console.log(this.pos[player].pos );
+        
         this.soal = ''
         this.pilihan = []
         this.index++
@@ -120,8 +116,7 @@ export default {
       this.jumlahSoal = this.$store.state.kumpulanSoal.length
       this.soal = this.$store.state.kumpulanSoal[i]
       this.pilihan = this.soal.pilihan
-      console.log(this.soal);
-      console.log(this.pilihan);
+      
     }
   },
   watch: {
@@ -132,16 +127,20 @@ export default {
     }
   },
   created(){
+    let player = localStorage.getItem('player')
     let roomIds = "QTYpCb9fU0PzS8GomxEl"
     this.roomId = roomIds
     this.$store.dispatch('getPertanyaan')
     db.collection("rooms").doc(roomIds)
-          .onSnapshot(function(doc) {
+          .onSnapshot((doc) =>{
             this.pos = doc.data()
             this.count = doc.data().count
-              console.log("Current data: ", doc.data());
-            console.log(this.pos);
+            this.player = player
             this.finish = doc.data().finish
+            console.log(this.pos);
+            console.log(this.pos[player].pos);
+            
+            
             // doc.forEach(player => {
             //   });
               // console.log(doc.data);
@@ -164,6 +163,18 @@ export default {
 .pertanyaan {
   background-image: url('../../public/congruent_pentagon.png');
   width: 100%;
+}
+.road{
+  background-image: url('../../public/stardust.png');
+  height: 20%;
+  width: 95%;
+  border-radius: 15px;
+  box-shadow: -4px -4px 35px -6px rgba(0,0,0,0.75);
+  padding: 5px;
+}
+
+.road img {
+  height: 50px;
 }
 
 </style>
