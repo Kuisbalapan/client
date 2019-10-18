@@ -59,11 +59,12 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
-import firebase from '../configs/firebase'
-import db from '../configs/firestore'
+// import firebase from '../configs/firebase'
+import db from '../../config/firestore'
 
 export default {
   name: 'home',
