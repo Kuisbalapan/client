@@ -111,4 +111,7 @@ export default {
 }
 
 </style>
+<<<<<<< HEAD
 
+=======
+>>>>>>> bankSoal_2
