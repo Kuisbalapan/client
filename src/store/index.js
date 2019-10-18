@@ -10,9 +10,18 @@ export default new Vuex.Store({
     kumpulanSoal : []
   },
   mutations: {
+<<<<<<< HEAD
     pushSoal(state,payload){
       state.kumpulanSoal = payload
     }
+=======
+    getPertanyaan(state,payload){
+      state.pertanyaans = payload
+      console.log(state.status,'dari store')
+      console.log(state.pertanyaans, 'dari storeeee')
+    }
+
+>>>>>>> sedikit
   },
   actions:{
     getPertanyaan(context){
