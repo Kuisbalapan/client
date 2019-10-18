@@ -63,7 +63,11 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 // import firebase from '../configs/firebase'
+=======
+// import firebase from '../../config/firebase'
+>>>>>>> bankSoal_2
 import db from '../../config/firestore'
 
 export default {
