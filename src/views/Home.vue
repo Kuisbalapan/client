@@ -1,11 +1,11 @@
 <template>
   <div class="home">
    <div class="d-flex justify-content-center">
-      <div class="findRoom room d-flex">
+      <div class="findRoom room d-flex" @click="toggleJoinRoom()">
         <img src="../../public/undraw_air_support_wy1q.svg" alt="">
         <h1 class="display-3 text-left">Find Room</h1>
     </div>
-     <div class="createRoom room">
+     <div class="createRoom room" @click.prevent="toggleCreateRoom()">
         <img src="../../public/undraw_buy_house_560d.svg" alt="">
         <h1 class="display-3 text-left">Create Room</h1>
     </div>
@@ -14,14 +14,9 @@
   <div class="container-fluid">
     <div class="row d-flex flex-column justify-content-center align-items-center">
       <div class="col-sm">
-        One of three columns
-      </div>
-      <div class="col-sm">
         <div>
-          <b-button id="toggle-btn" @click="toggleModal">Toggle Modal</b-button>
-
           <!-- Modal -->
-          <b-modal ref="my-modal" hide-footer title="Using Component Methods">
+          <b-modal ref="join-room" hide-footer title="Join Room">
             <b-form @submit.prevent="joinRoom()">
               <div class="d-block">
                 <b-form-group
@@ -52,18 +47,49 @@
                   ></b-form-input>
                 </b-form-group>
               </div>
-              <b-button class="mt-2" variant="outline-warning" block type="submit">Toggle Me</b-button>
+              <b-button variant="warning" disabled v-if="loading" block>
+                <b-spinner small type="grow"></b-spinner>
+                Loading...
+              </b-button>
+              <b-button class="mt-2" variant="outline-warning" block type="submit" v-if="!loading">Toggle Me</b-button>
+            </b-form>
+          </b-modal>
+          <!-- modal create -->
+          <b-modal ref="create-room" hide-footer title="Create Room">
+            <b-form @submit.prevent="createRoom()">
+              <div class="d-block">
+                <b-form-group
+                  id="input-name"
+                  label="Name:"
+                  label-for="name"
+                >
+                  <b-form-input
+                    id="name"
+                    type="text"
+                    required
+                    placeholder="Enter name"
+                    v-model="createName"
+                  ></b-form-input>
+                </b-form-group>
+                
+              </div>
+              <b-button variant="warning" disabled v-if="loading" block>
+                <b-spinner small type="grow"></b-spinner>
+                Loading...
+              </b-button>
+              <b-button class="mt-2" variant="outline-warning" block type="submit" v-if="!loading">Toggle Me</b-button>
             </b-form>
           </b-modal>
         </div>
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
-import firebase from '../configs/firebase'
-import db from '../configs/firestore'
+// import firebase from '../../config/firebase'
+import db from '../../config/firestore'
 
 export default {
   name: 'home',
@@ -71,16 +97,20 @@ export default {
     return{
       name: '',
       roomId: '',
-      createName: ''
+      createName: '',
+      loading: false
     }
   },
   methods: {
-    toggleModal() {
-      // We pass the ID of the button that we want to return focus to
-      // when the modal has hidden
-      this.$refs['my-modal'].toggle('#toggle-btn')
+    toggleJoinRoom() {
+      this.$refs['join-room'].toggle('#toggle-btn')
+    },
+    toggleCreateRoom(){
+      this.$refs['create-room'].toggle('#toggle-btn')
+
     },
     joinRoom(){
+      this.loading = true
       db.collection('rooms').get()
         .then(doc=>{
           let roomData = ''
@@ -94,8 +124,13 @@ export default {
               roomData = room.data()
             }
           })
-          if(roomData.count >4){
-            swal("Room is full", "Room is full join other room", "error");
+          if(roomData.count >=4){
+            swal("Room is full", "Room is full join other room", "error")
+            this.loading = false
+          }
+          else if(!roomData){
+            swal("Room is not found", "", "error")
+            this.loading = false
           }
           else{
             roomData.count += 1
@@ -108,6 +143,7 @@ export default {
             player2 = roomData.player2
             player3 = roomData.player3
             player4 = roomData.player4
+            this.toggleJoinRoom()
 
             db.collection('rooms').doc(this.roomId)
             .set({
@@ -117,6 +153,9 @@ export default {
               player3,
               player4
             })
+            .then(_=>{
+              this.loading = false
+            })
           }
         })
     },
@@ -124,7 +163,7 @@ export default {
       db.collection("rooms").add({
         count: 1,
         player1: {
-          name: this.name,
+          name: this.createName,
           pos: 0
         },
         player2: {
