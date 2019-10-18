@@ -1,39 +1,32 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { stat } from 'fs'
+import db from '../../config/firestore'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     pertanyaans : [],
+    kumpulanSoal : []
   },
   mutations: {
-<<<<<<< HEAD
-    getPertanyaan(state,payload){
-      state.pertanyaans = payload
-      console.log(state.status,'dari store')
-      console.log(state.pertanyaans, 'dari storeeee')
+    pushSoal(state,payload){
+      state.kumpulanSoal = payload
     }
-
-=======
-    test(){
-      console.log(123)
-    }
->>>>>>> home
   },
   actions:{
-    ambilSoalDariFb(context){
-      // db.collection('soal').get()
-      //   .then(soal => {
-      //     getPertanyaan(soal)
-              context.commit('getPertanyaan', soal)
-      //   })
+    getPertanyaan(context){
+      db.collection("pertanyaan").get()
+      .then(function(doc){
+        let soals = []
+        doc.forEach((pertanyaan)=>{
+          soals.push(pertanyaan.data())
+        })
+        context.commit('pushSoal',soals)
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
     }
-      
-  },
-  modules: {
-
-
   }
 })
