@@ -20,6 +20,8 @@
       <b-button @click="getPertanyaan(false)" block variant="outline-secondary">12.000</b-button>
       <b-button @click="getPertanyaan(false)" block variant="outline-secondary">11.000</b-button> -->
     </div>
+
+    <button @click="ambil(0)">ambil soal</button>
   </div>
 </template>
 
