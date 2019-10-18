@@ -9,12 +9,18 @@ export default new Vuex.Store({
     pertanyaans : [],
   },
   mutations: {
+<<<<<<< HEAD
     getPertanyaan(state,payload){
       state.pertanyaans = payload
       console.log(state.status,'dari store')
       console.log(state.pertanyaans, 'dari storeeee')
     }
 
+=======
+    test(){
+      console.log(123)
+    }
+>>>>>>> home
   },
   actions:{
     ambilSoalDariFb(context){
