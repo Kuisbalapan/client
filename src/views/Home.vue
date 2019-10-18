@@ -63,11 +63,6 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-// import firebase from '../../config/firebase'
-=======
-
->>>>>>> mobilMadju
 import db from '../../config/firestore'
 
 export default {
