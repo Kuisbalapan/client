@@ -6,9 +6,9 @@
     <div class="pertanyaan border border-dark pt-3" >
       <h5>Question?</h5>
       <!-- <h3>Berapa Harga Mie Goreng Double Di Satpam Hacktiv8 ?</h3> -->
-       <button @click="ambil(0)">ambil soal</button>
+       <button @click="ambil(0)" v-if="!game">ambil soal</button>
          <!-- <h4>pos anda : {{pos}}</h4> -->
-    <h6>jumlah soal: {{jumlahSoal}}</h6>
+    
         <div>{{soal.soal}}</div>
         <b-button v-for="option in pilihan" 
         :key="option.id" 
@@ -20,8 +20,9 @@
       <b-button @click="getPertanyaan(false)" block variant="outline-secondary">12.000</b-button>
       <b-button @click="getPertanyaan(false)" block variant="outline-secondary">11.000</b-button> -->
     </div>
-
-    <button @click="ambil(0)">ambil soal</button>
+    <audio autoplay>
+      <source src="../../public/audio.mp3" type="audio/mpeg">
+    </audio>
   </div>
 </template>
 
@@ -57,7 +58,7 @@ export default {
       count : '',
       finish : false,
       player: '',
-      game: false
+      game: false,
     }
   },
   methods: {
@@ -69,9 +70,6 @@ export default {
         pertanyaan = []
         this.$store.state('pertanyaans')
       }
-    },
-    mulaiGame(){
-      this.pertanyaan = this.$store.state('pertanyaans')[0]
     },
     jawaban(value){
       let player = localStorage.getItem('player')
@@ -116,6 +114,7 @@ export default {
       }
     },
     ambil(i){
+      this.game = true
       this.jumlahSoal = this.$store.state.kumpulanSoal.length
       this.soal = this.$store.state.kumpulanSoal[i]
       this.pilihan = this.soal.pilihan
@@ -125,7 +124,22 @@ export default {
   watch: {
     finish(value){
       if( value == true){
-        swal('FINISH')
+        swal({
+          title: "FINNISHED",
+          text: "Race has finnished, wanna play again?",
+          icon: "info",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            localStorage.removeItem('player')
+            this.$router.push('/')
+          } else {
+            localStorage.removeItem('player')
+            this.$router.push('/')
+          }
+        });
       }
     }
   },
