@@ -1,8 +1,9 @@
 <template>
+  <div>
   <div class="race d-flex flex-column justify-content-around align-items-center">
     <road v-for="(player, index) in players" :key="index" :car="cars[index]"/>
-  <div>
-    <div class="border border-dark pt-3" >
+  </div>
+    <div class="pertanyaan border border-dark pt-3" >
       <h5>Question?</h5>
       <h3>Berapa Harga Mie Goreng Double Di Satpam Hacktiv8 ?</h3>
       <b-button @click="getPertanyaan(true)" block variant="outline-secondary">15.000</b-button>
@@ -53,6 +54,10 @@ export default {
 .race {
   background-image: url('../../public/congruent_pentagon.png');
   height: 60vh;
+  width: 100%;
+}
+.pertanyaan {
+  background-image: url('../../public/congruent_pentagon.png');
   width: 100%;
 }
 
