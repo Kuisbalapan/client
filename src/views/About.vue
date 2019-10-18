@@ -1,20 +1,20 @@
 <template>
   <div>
   <div class="race d-flex flex-column justify-content-around align-items-center">
-    <road v-for="(player, index) in players" :key="index" :car="cars[index]"/>
+    <road v-for="(player, index) in players" :key="index" :car="cars[index]" :pos="pos" :player="player"/>
   </div>
     <div class="pertanyaan border border-dark pt-3" >
       <h5>Question?</h5>
       <!-- <h3>Berapa Harga Mie Goreng Double Di Satpam Hacktiv8 ?</h3> -->
        <button @click="ambil(0)">ambil soal</button>
-         <h4>score anda : {{score}}</h4>
+         <!-- <h4>pos anda : {{pos}}</h4> -->
     <h6>jumlah soal: {{jumlahSoal}}</h6>
         <div>{{soal.soal}}</div>
-        <button v-for="option in pilihan" 
+        <b-button v-for="option in pilihan" 
         :key="option.id" 
-        @click="jawaban(option.value)">
+        @click="jawaban(option.value)" block variant="outline-secondary">
         {{option.option}}
-        </button>
+        </b-button>
       <!-- <b-button @click="getPertanyaan(true)" block variant="outline-secondary">15.000</b-button>
       <b-button @click="getPertanyaan(false)" block variant="outline-secondary">13.000</b-button>
       <b-button @click="getPertanyaan(false)" block variant="outline-secondary">12.000</b-button>
@@ -28,6 +28,7 @@
 <script>
 import road from '@/components/road.vue'
 import { mapState, mapMutations } from "vuex";
+import db from '../../config/firestore'
 
 export default {
   components: {
@@ -41,12 +42,25 @@ export default {
       'https://img.icons8.com/color/48/000000/electric-bumper-car.png',
       'https://img.icons8.com/dusk/64/000000/encashment-car.png',
       'https://img.icons8.com/dusk/64/000000/car-roof-box.png'],
+<<<<<<< HEAD
       pertanyaan : [],
       score : 0,
+=======
+       pertanyaan : [],
+        pos : {
+          player1 : {name : '' ,pos : 0},
+          player2 : {name : '' ,pos : 0},
+          player3 : {name : '' ,pos : 0},
+          player4 : {name : '' ,pos : 0}
+        },
+>>>>>>> mobilMadju
       soal : '',
       pilihan : [],
       index : 0,
-      jumlahSoal : 0
+      jumlahSoal : 0,
+      roomId : '',
+      count : '',
+      finish : false
     }
   },
   methods: {
@@ -63,26 +77,43 @@ export default {
       this.pertanyaan = this.$store.state('pertanyaans')[0]
     },
     jawaban(value){
+      let player = localStorage.getItem('player')
       if(value){
-        this.score += 1
-        console.log(this.score);
-        // jarak kuda nya nambah
-        // soalnya lanjut ke soal berikutnya
+        this.pos[player].pos += 13
+          if (this.pos[player].pos >= 91) {
+                  console.log('udah finish')
+                  // this.pos[player].pos = 0
+                  // alert('udah mentok')
+                  this.finish = true 
+          }
+          db.collection('rooms').doc(this.roomId)
+            .set({
+              count : this.count,
+              player1 : this.pos.player1,
+              player2 : this.pos.player2,
+              player3 : this.pos.player3,
+              player4 : this.pos.player4,
+              finish : this.finish
+            })
+
+        console.log(this.pos[player].pos );
         this.soal = ''
         this.pilihan = []
         this.index++
-        if(this.index < this.jumlahSoal){
-          this.ambil(this.index)
-        } else {
-          console.log('soal abis')
+        if(this.index === this.jumlahSoal){
+          this.index = 0
         }
+          this.ambil(this.index)
       } else {
-        console.log(this.score);
+
+        console.log(this.pos[player].pos );
         this.soal = ''
         this.pilihan = []
         this.index++
+        if(this.index === this.jumlahSoal){
+          this.index = 0
+        }
         this.ambil(this.index)
-        // soalnya lanjut ke soal berikutnyas
       }
     },
     ambil(i){
@@ -93,9 +124,34 @@ export default {
       console.log(this.pilihan);
     }
   },
+  watch: {
+    finish(value){
+      if( value == true){
+        swal('FINISH')
+      }
+    }
+  },
   created(){
+    let roomIds = "QTYpCb9fU0PzS8GomxEl"
+    this.roomId = roomIds
     this.$store.dispatch('getPertanyaan')
-  }
+    db.collection("rooms").doc(roomIds)
+          .onSnapshot(function(doc) {
+            this.pos = doc.data()
+            this.count = doc.data().count
+              console.log("Current data: ", doc.data());
+            console.log(this.pos);
+            this.finish = doc.data().finish
+            // doc.forEach(player => {
+            //   });
+              // console.log(doc.data);
+          });
+  },
+  // watch(){
+  //   pos(value){
+  //     if(value.player1 || value.player2 || value.player3 || value.player4 ===  )
+  //   }
+  // }
 }
 </script>
 
