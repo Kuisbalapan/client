@@ -56,7 +56,8 @@ export default {
       roomId : '',
       count : '',
       finish : false,
-      player: ''
+      player: '',
+      game: false
     }
   },
   methods: {
@@ -82,6 +83,8 @@ export default {
                   // alert('udah mentok')
                   this.finish = true 
           }
+          console.log();
+          
           db.collection('rooms').doc(this.roomId)
             .set({
               count : this.count,
@@ -128,15 +131,16 @@ export default {
   },
   created(){
     let player = localStorage.getItem('player')
-    let roomIds = "QTYpCb9fU0PzS8GomxEl"
-    this.roomId = roomIds
+    this.roomId = this.$route.params.id
     this.$store.dispatch('getPertanyaan')
-    db.collection("rooms").doc(roomIds)
+    db.collection("rooms").doc(this.roomId)
           .onSnapshot((doc) =>{
             this.pos = doc.data()
             this.count = doc.data().count
             this.player = player
             this.finish = doc.data().finish
+            console.log(this.finish);
+            
             console.log(this.pos);
             console.log(this.pos[player].pos);
             
@@ -145,7 +149,7 @@ export default {
             //   });
               // console.log(doc.data);
           });
-  },
+  }
   // watch(){
   //   pos(value){
   //     if(value.player1 || value.player2 || value.player3 || value.player4 ===  )

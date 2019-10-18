@@ -89,6 +89,7 @@ export default {
           let player2 = ''
           let player3 = ''
           let player4 = ''
+          let finish = false
           doc.forEach(room=>{
             if(room.id == this.roomId){
               roomData = room.data()
@@ -107,7 +108,9 @@ export default {
             player1 = roomData.player1
             player2 = roomData.player2
             player3 = roomData.player3
-            player4 = roomData.player4
+            player4 = roomData.player4,
+            finish = roomData.finish
+            this.toggleJoinRoom()
 
             db.collection('rooms').doc(this.roomId)
             .set({
@@ -115,13 +118,20 @@ export default {
               player1,
               player2,
               player3,
-              player4
+              player4,
+              finish
+            })
+            .then(_=>{
+              localStorage.setItem('player', `player${count}`)
+              this.$router.push(`/race/${this.roomId}`)
+              this.loading = false
             })
           }
         })
     },
     createRoom(){
       db.collection("rooms").add({
+        finish: false,
         count: 1,
         player1: {
           name: this.name,
@@ -140,10 +150,11 @@ export default {
           pos: 0
         },
       })
-      .then(function(docRef) {
-        console.log(docRef.id);
+      .then((docRef)=> {
+        localStorage.setItem('player', 'player1')
+        this.$router.push(`/race/${docRef.id}`)
       })
-      .catch(function(error) {
+      .catch((error)=> {
         console.error("Error adding document: ", error);
       });
 
