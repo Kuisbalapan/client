@@ -1,5 +1,6 @@
 <template>
     <div class="road d-flex align-items-center">
+        <p style="color:white; width: 40px;">{{ pos[player].name }}</p>
         <img :src="car" :style="'margin-left:'+ pos[player].pos+ 'vw; transition: 600ms;'">
     </div>
 </template>
