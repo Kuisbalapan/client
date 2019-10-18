@@ -1,7 +1,6 @@
 <template>
     <div class="road d-flex align-items-center">
-        <button @click.prevent="moveCar" class="btn btn-info mr-2">move car</button>
-        <img :src="car" :style="'margin-left:'+ pos+ 'vw; transition: 600ms;'">
+        <img :src="car" :style="'margin-left:'+ pos[player].pos+ 'vw; transition: 600ms;'">
     </div>
 </template>
 
@@ -9,17 +8,18 @@
 export default {
     data(){
         return {
-            pos : 0
+            
         }
     },
-    props:['car'],
+    props:['car', 'pos', 'player'],
     methods:{
         moveCar(){
-            if(this.pos < 93) {
-                this.pos+=5
-            }
-            else {
-                this.pos = 0
+            if(this.pos[player].pos < 93) {
+                console.log('masih bisa')
+                this.pos[player].pos+=5
+            }else {
+                console.log('udah finish')
+                this.pos[player].pos = 0
                 alert('udah mentok') 
             }
         }
